@@ -18,4 +18,5 @@ model User {
 model Recipe {
   id          String   @id @default(uuid())
   ingredients String[]
+  directions  String
 }

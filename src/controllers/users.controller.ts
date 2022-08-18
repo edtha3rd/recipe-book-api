@@ -11,10 +11,10 @@ async function main() {
   // router.get('/user', (req: Request, res: Response) => {
   //   res.send('Hello User')
   // })
-  router.post('/createUser', async (req: Request, res: Response) => {
+  router.post(`/createUser`, async (req: Request, res: Response) => {
     const user = await prisma.user.create({
       data: {
-        username: 'Kyle',
+        username: req.body.username,
       },
     })
     console.log('User:', user)

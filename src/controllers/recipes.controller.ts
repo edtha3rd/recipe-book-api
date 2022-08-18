@@ -16,6 +16,7 @@ async function main() {
     console.log(recipes)
     res.send(recipes)
   })
+  router.post('./postRecipe', async (req: Request, res: Response) => {})
 }
 
 main()

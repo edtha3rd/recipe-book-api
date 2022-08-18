@@ -9,7 +9,7 @@
     "prisma:generate": "prisma generate",
     "prisma:generate:watch": "prisma generate --watch",
     "prisma:seed": "prisma db seed --preview-feature",
-    "start": "ts-node src/server.ts",
+    "start": "nodemon src/server.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Tawanda",

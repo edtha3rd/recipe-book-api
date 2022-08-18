@@ -13,10 +13,14 @@ datasource db {
 model User {
   id       String @id @default(uuid())
   username String @unique
+  recipes  Recipe @relation(fields: [recipeId], references: [id])
+  recipeId String
 }
 
 model Recipe {
   id          String   @id @default(uuid())
   ingredients String[]
   directions  String
+  image       String
+  Author      User[]
 }

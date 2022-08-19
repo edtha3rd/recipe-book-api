@@ -11,10 +11,12 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
-  username String @unique
-  recipes  Recipe @relation(fields: [recipeId], references: [id])
-  recipeId String
+  id          String   @id @default(uuid())
+  username    String   @unique
+  displayName String?
+  provider    String?
+  avatarURL   String?
+  recipes     Recipe[]
 }
 
 model Recipe {
@@ -22,5 +24,6 @@ model Recipe {
   ingredients String[]
   directions  String
   image       String
-  Author      User[]
+  User        User?    @relation(fields: [userId], references: [id])
+  userId      String?
 }

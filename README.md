@@ -5,4 +5,4 @@
 - Express
 - Prisma
 - Postgresql
-- Authentication still tbd
+- PassportJS

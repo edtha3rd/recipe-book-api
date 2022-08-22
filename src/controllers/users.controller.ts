@@ -20,6 +20,12 @@ async function main() {
     console.log(users)
     res.send(users)
   })
+  router.get('user/:username', async (req: Request, res: Response) => {
+    const user = await prisma.user.findUnique({
+      where: { username: req.body.username },
+    })
+    res.send(user)
+  })
 }
 
 main()

@@ -22,7 +22,40 @@ async function main() {
     // console.log(recipes)
     // res.send(recipes)
   })
-  router.post('./postRecipe', async (req: Request, res: Response) => {})
+  router.get('recipes/:id', isLoggedIn, async (req: Request, res: Response) => {
+    const recipe = prisma.recipe.findUnique({ where: { id: req.body.id } })
+    res.send(recipe)
+  })
+  router.post(
+    './postRecipe',
+    isLoggedIn,
+    async (req: Request, res: Response) => {
+      const recipe = await prisma.recipe.create({
+        data: {
+          ingredients: req.body.ingredients,
+          directions: req.body.ingredients,
+          image: req.body.image,
+          author: req.user || 'unknown',
+        },
+      })
+      res.send(recipe)
+    }
+  )
+  router.put(
+    '/updateRecipe/:id',
+    isLoggedIn,
+    async (req: Request, res: Response) => {
+      const recipe = prisma.recipe.update({
+        where: { id: req.body.id },
+        data: {
+          ingredients: req.body.ingredients,
+          directions: req.body.ingredients,
+          image: req.body.image,
+        },
+      })
+      res.send(recipe)
+    }
+  )
 }
 
 main()

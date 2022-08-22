@@ -24,6 +24,7 @@ model Recipe {
   ingredients String[]
   directions  String
   image       String
+  category    String
   author      User     @relation(fields: [authorId], references: [id])
   authorId    String
 }

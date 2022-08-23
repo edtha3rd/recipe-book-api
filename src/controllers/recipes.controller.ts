@@ -1,12 +1,21 @@
+import { v2 as Cloudinary } from 'cloudinary'
 import { NextFunction, Request, Response, Router } from 'express'
+import multer from 'multer'
 
 //prisma
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
+const upload = multer()
 const isLoggedIn = (req: Request, res: Response, next: NextFunction) => {
   req.user ? next() : res.sendStatus(401)
 }
+
+Cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
+})
 
 const router = Router()
 
@@ -22,16 +31,26 @@ async function main() {
     // console.log(recipes)
     // res.send(recipes)
   })
-  router.get('recipes/:id', isLoggedIn, async (req: Request, res: Response) => {
+  router.get('recipe/:id', isLoggedIn, async (req: Request, res: Response) => {
     const recipe = prisma.recipe.findUnique({ where: { id: req.body.id } })
     res.send(recipe)
   })
   router.post(
-    './postRecipe',
+    './postrecipe',
+    upload.single('image'),
     isLoggedIn,
     async (req: Request, res: Response) => {
+      console.log(req.file)
+      //options
+      // const options: Object = {
+      //   preset:
+      // }
+      //cloudinary upload
+      // Cloudinary.uploader.upload(req.file, options)
+      //add new recipe to database
       const recipe = await prisma.recipe.create({
         data: {
+          category: req.body.category,
           ingredients: req.body.ingredients,
           directions: req.body.ingredients,
           image: req.body.image,
@@ -42,7 +61,7 @@ async function main() {
     }
   )
   router.put(
-    '/updateRecipe/:id',
+    '/updaterecipe/:id',
     isLoggedIn,
     async (req: Request, res: Response) => {
       const recipe = prisma.recipe.update({

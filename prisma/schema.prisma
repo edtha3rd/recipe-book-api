@@ -21,6 +21,7 @@ model User {
 
 model Recipe {
   id          String   @id @default(uuid())
+  name        String
   ingredients String[]
   directions  String
   image       String

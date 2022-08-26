@@ -50,6 +50,7 @@ async function main() {
       //add new recipe to database
       const recipe = await prisma.recipe.create({
         data: {
+          name: req.body.name,
           category: req.body.category,
           ingredients: req.body.ingredients,
           directions: req.body.ingredients,
@@ -67,6 +68,7 @@ async function main() {
       const recipe = prisma.recipe.update({
         where: { id: req.body.id },
         data: {
+          name: req.body.name,
           ingredients: req.body.ingredients,
           directions: req.body.ingredients,
           image: req.body.image,

@@ -1,19 +1,19 @@
-import { PrismaClient, User } from '@prisma/client'
-import { Request, Response, Router } from 'express'
-import passport from 'passport'
-import { PassportGoogleUserEntity } from '../models/PassportGoogleUserEntity'
-const GoogleStrategy = require('passport-google-oauth2').Strategy
+import { PrismaClient, User } from "@prisma/client";
+import { Request, Response, Router } from "express";
+import passport from "passport";
+import { PassportGoogleUserEntity } from "../models/PassportGoogleUserEntity";
+const GoogleStrategy = require("passport-google-oauth2").Strategy;
 
-const router = Router()
-const prisma = new PrismaClient()
+const router = Router();
+const prisma = new PrismaClient();
 
 passport.use(
   new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: 'http://localhost:8008/auth/google/callback/',
-      scope: [' profile '],
+      callbackURL: "http://localhost:8008/auth/google/callback/",
+      scope: [" profile "],
       state: true,
     },
     async (
@@ -25,49 +25,66 @@ passport.use(
       //check if user already exists
       const hasUser = await prisma.user.findUnique({
         where: { username: profile._json.email },
-      })
+      });
       if (hasUser) {
-        cb(null, hasUser)
+        cb(null, hasUser);
       } else {
         const newUser = await prisma.user.create({
           data: {
-            provider: 'google',
+            provider: "google",
             username: profile._json.email,
             displayName: profile.displayName,
             avatarURL: profile.photos[0].value,
           },
-        })
-        cb(null, newUser)
+        });
+        cb(null, newUser);
       }
     }
   )
-)
+);
 
 passport.serializeUser(async (newUser, done) => {
-  done(null, (newUser as User).username)
-})
+  done(null, (newUser as User).username);
+});
 
 passport.deserializeUser(async (newUser: string, done) => {
   const thisUser = await prisma.user.findUnique({
     where: { username: newUser },
-  })
-  if (!thisUser) return done('No user to deserialize')
+  });
+  if (!thisUser) return done("No user to deserialize");
 
-  return done(null, thisUser)
-})
+  return done(null, thisUser);
+});
 
 async function main() {
-  router.get(
-    '/auth/google',
-    passport.authenticate('google', { scope: ['email', 'profile'] })
-  )
-  router.get(
-    '/auth/google/callback',
-    passport.authenticate('google', { failureRedirect: '/' }),
-    (req: Request, res: Response) => {
-      res.redirect('/recipes')
+  // router.get("/logout", (req, res) => {
+  //   req.logOut()
+  //   res.redirect(process.env.API_URI)
+  // })
+  router.get("/auth/login/success", (req, res) => {
+    if (req.user) {
+      res.status(200).json({
+        success: true,
+        message: "successful",
+        user: req.user,
+        cookies: req.cookies,
+      });
     }
-  )
+  });
+  router.get(
+    "/auth/google",
+    passport.authenticate("google", { scope: ["email", "profile"] })
+  );
+  router.get(
+    "/auth/google/callback",
+    passport.authenticate("google", {
+      failureRedirect: "http://localhost:3000/#/login",
+    }),
+    (req: Request, res: Response) => {
+      // res.cookie: req.cookies,
+      res.redirect("http://localhost:3000/#/");
+    }
+  );
   //   router.post(
   //     `/signup/authenticateUser`,
   //     async (req: Request, res: Response) => {
@@ -84,8 +101,8 @@ async function main() {
 
 main()
   .catch((e) => {
-    console.log(e.message)
+    console.log(e.message);
   })
-  .finally(async () => {})
+  .finally(async () => {});
 
-export default router
+export default router;

@@ -11,7 +11,7 @@ const allowedOrigins = ["http://localhost:3000"];
 
 const options: cors.CorsOptions = {
   origin: allowedOrigins,
-  methods: "GET,PUT,POST,DELETE",
+  methods: ["GET", "PUT", "POST", "DELETE"],
   credentials: true,
 };
 

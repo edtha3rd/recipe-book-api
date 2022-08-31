@@ -67,7 +67,14 @@ async function main() {
         success: true,
         message: "successful",
         user: req.user,
-        cookies: req.cookies,
+      });
+    }
+  });
+  router.get("/auth/login/failed", (req, res) => {
+    if (req.user) {
+      res.status(401).json({
+        success: false,
+        message: "failed",
       });
     }
   });

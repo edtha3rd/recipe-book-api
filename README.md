@@ -5,4 +5,4 @@
 - Express
 - Prisma
 - Postgresql
-- PassportJS
+- PassportJS (Google OAuth 2.0)

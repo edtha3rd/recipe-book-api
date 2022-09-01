@@ -1,9 +1,11 @@
-import { v2 as Cloudinary } from "cloudinary";
+import { UploadApiResponse, v2 as Cloudinary } from "cloudinary";
 import { NextFunction, Request, Response, Router } from "express";
 import multer from "multer";
+import streamifier from "streamifier";
 
 //prisma
 import { PrismaClient } from "@prisma/client";
+import uuid4 from "uuid4";
 const prisma = new PrismaClient();
 
 const upload = multer();
@@ -16,6 +18,14 @@ Cloudinary.config({
   api_key: process.env.API_KEY,
   api_secret: process.env.API_SECRET,
 });
+
+declare global {
+  namespace Express {
+    interface User {
+      id: string;
+    }
+  }
+}
 
 const router = Router();
 
@@ -40,8 +50,33 @@ async function main() {
     upload.single("image"),
     isLoggedIn,
     async (req: Request, res: Response) => {
-      console.log(req.file);
-      console.log(req.body);
+      let result;
+      // console.log(req.file);
+      // console.log(req.body);
+      let streamUpload = () => {
+        return new Promise((resolve, reject) => {
+          const stream = Cloudinary.uploader.upload_stream(
+            {
+              folder: "recipe-book/images",
+              upload_preset: "recipe_book",
+              public_id: `${req.body.name}-recipe`,
+            },
+            (error: Error, result: UploadApiResponse) => {
+              if (result) resolve(result);
+              else {
+                console.log("Error: ", error.message);
+                reject(error);
+              }
+            }
+          );
+          streamifier.createReadStream(req.file.buffer).pipe(stream);
+        });
+      };
+      async function upload() {
+        result = await streamUpload();
+        console.log("Result: ", result);
+      }
+      upload();
       //options
       // const options: Object = {
       //   preset:
@@ -55,8 +90,8 @@ async function main() {
           category: req.body.category,
           ingredients: req.body.ingredients,
           directions: req.body.ingredients,
-          image: req.body.image,
-          author: req.user || "unknown",
+          image: result,
+          authorId: req.user.id || "unknown",
         },
       });
       res.send(recipe);
@@ -69,9 +104,10 @@ async function main() {
       const recipe = prisma.recipe.update({
         where: { id: req.body.id },
         data: {
+          id: uuid4(),
           name: req.body.name,
           category: req.body.category,
-          directions: req.body.ingredients,
+          directions: req.body.directions,
           ingredients: req.body.ingredients,
           image: req.body.image,
         },

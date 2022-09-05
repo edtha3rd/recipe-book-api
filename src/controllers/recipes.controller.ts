@@ -50,7 +50,7 @@ async function main() {
     upload.single("image"),
     isLoggedIn,
     async (req: Request, res: Response) => {
-      let result;
+      let returnObject;
       // console.log(req.file);
       // console.log(req.body);
       let streamUpload = () => {
@@ -73,16 +73,11 @@ async function main() {
         });
       };
       async function upload() {
-        result = await streamUpload();
-        console.log("Result: ", result);
+        returnObject = await streamUpload();
+        console.log("Result: ", returnObject);
       }
       upload();
-      //options
-      // const options: Object = {
-      //   preset:
-      // }
       //cloudinary upload
-      // Cloudinary.uploader.upload(req.file, options)
       //add new recipe to database
       const recipe = await prisma.recipe.create({
         data: {
@@ -90,7 +85,7 @@ async function main() {
           category: req.body.category,
           ingredients: req.body.ingredients,
           directions: req.body.ingredients,
-          image: result,
+          image: returnObject.secure_url,
           authorId: req.user.id || "unknown",
         },
       });

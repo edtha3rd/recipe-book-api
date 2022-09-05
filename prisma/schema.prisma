@@ -26,6 +26,8 @@ model Recipe {
   directions  String
   image       String
   category    String
+  prepTime    String
+  isFavorite  Boolean  @default(false)
   author      User     @relation(fields: [authorId], references: [id])
   authorId    String
 }

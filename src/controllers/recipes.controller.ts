@@ -85,6 +85,7 @@ async function main() {
           category: req.body.category,
           ingredients: req.body.ingredients,
           directions: req.body.ingredients,
+          prepTime: req.body.prepTime,
           image: returnObject.secure_url,
           authorId: req.user.id || "unknown",
         },

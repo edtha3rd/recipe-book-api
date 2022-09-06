@@ -35,8 +35,10 @@ async function main() {
   //   res.send('Hello User')
   // })
   router.get("/recipes", isLoggedIn, async (req: Request, res: Response) => {
-    console.log(req.user);
-    res.send("Your recipes will be here");
+    const recipes = prisma.recipe.findMany({
+      where: { authorId: req.user.id },
+    });
+    res.send(recipes);
     // const recipes = await prisma.user.findMany()
     // console.log(recipes)
     // res.send(recipes)
@@ -108,6 +110,29 @@ async function main() {
           image: req.body.image,
         },
       });
+      res.send(recipe);
+    }
+  );
+  router.put(
+    "/favoritepost/:id",
+    isLoggedIn,
+    async (req: Request, res: Response) => {
+      let recipe;
+      if (req.body.isFavorite) {
+        recipe = await prisma.recipe.update({
+          where: { id: req.body.id },
+          data: {
+            isFavorite: false,
+          },
+        });
+      } else {
+        recipe = await prisma.recipe.update({
+          where: { id: req.body.id },
+          data: {
+            isFavorite: true,
+          },
+        });
+      }
       res.send(recipe);
     }
   );

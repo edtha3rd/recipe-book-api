@@ -1,13 +1,13 @@
-import { NextFunction, Request, Response, Router } from 'express'
+import { NextFunction, Request, Response, Router } from "express";
 //prisma
-import { PrismaClient } from '@prisma/client'
-const prisma = new PrismaClient()
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
 
 const isLoggedIn = (req: Request, res: Response, next: NextFunction) => {
-  req.user ? next() : res.sendStatus(401)
-}
+  req.user ? next() : res.sendStatus(401);
+};
 
-const router = Router()
+const router = Router();
 
 async function main() {
   // add prisma client queries here
@@ -15,25 +15,24 @@ async function main() {
   //   res.send('Hello User')
   // })
 
-  router.get('/users', async (req: Request, res: Response) => {
-    const users = await prisma.user.findMany()
-    console.log(users)
-    res.send(users)
-  })
-  router.get('user/:username', async (req: Request, res: Response) => {
+  router.get("/users", async (req: Request, res: Response) => {
+    const users = await prisma.user.findMany();
+    res.send(users);
+  });
+  router.get("user/:username", async (req: Request, res: Response) => {
     const user = await prisma.user.findUnique({
       where: { username: req.body.username },
-    })
-    res.send(user)
-  })
+    });
+    res.send(user);
+  });
 }
 
 main()
   .catch((e) => {
-    console.log(e.message)
+    console.log(e.message);
   })
   .finally(async () => {
-    await prisma.$disconnect()
-  })
+    await prisma.$disconnect();
+  });
 
-export default router
+export default router;

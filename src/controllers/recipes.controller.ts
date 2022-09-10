@@ -35,16 +35,15 @@ async function main() {
   //   res.send('Hello User')
   // })
   router.get("/recipes", isLoggedIn, async (req: Request, res: Response) => {
-    const recipes = prisma.recipe.findMany({
+    const recipes = await prisma.recipe.findMany({
       where: { authorId: req.user.id },
     });
     res.send(recipes);
-    // const recipes = await prisma.user.findMany()
-    // console.log(recipes)
-    // res.send(recipes)
   });
   router.get("/recipe/:id", isLoggedIn, async (req: Request, res: Response) => {
-    const recipe = prisma.recipe.findUnique({ where: { id: req.body.id } });
+    const recipe = await prisma.recipe.findUnique({
+      where: { id: req.body.id },
+    });
     res.send(recipe);
   });
   router.post(
@@ -61,7 +60,7 @@ async function main() {
             {
               folder: "recipe-book/images",
               upload_preset: "recipe_book",
-              public_id: `${req.body.name}-recipe`,
+              public_id: `${req.body.name.toLowerCase()}-recipe`,
             },
             (error: Error, result: UploadApiResponse) => {
               if (result) resolve(result);
@@ -76,9 +75,8 @@ async function main() {
       };
       async function upload() {
         returnObject = await streamUpload();
-        console.log("Result: ", returnObject);
       }
-      upload();
+      await upload();
       //cloudinary upload
       //add new recipe to database
       const recipe = await prisma.recipe.create({
@@ -96,7 +94,7 @@ async function main() {
     }
   );
   router.put(
-    "/updaterecipe/:id",
+    "/recipe/:id/update",
     isLoggedIn,
     async (req: Request, res: Response) => {
       const recipe = prisma.recipe.update({
@@ -114,7 +112,7 @@ async function main() {
     }
   );
   router.put(
-    "/favoritepost/:id",
+    "/recipe/:id/favorite",
     isLoggedIn,
     async (req: Request, res: Response) => {
       let recipe;
@@ -134,6 +132,21 @@ async function main() {
         });
       }
       res.send(recipe);
+    }
+  );
+  router.delete(
+    "/recipe/:id/delete",
+    isLoggedIn,
+    async (req: Request, res: Response) => {
+      let recipe = await prisma.recipe.findUnique({
+        where: { id: req.body.id },
+      });
+      if (recipe.authorId !== req.user.id) {
+        throw new Error("You are not authorized to delete this recipe");
+      }
+      let result = await prisma.recipe.delete({ where: { id: req.body.id } });
+      console.log(result);
+      return result;
     }
   );
 }

@@ -23,9 +23,13 @@ passport.use(
       cb: any
     ) => {
       //check if user already exists
-      const hasUser = await prisma.user.findUnique({
-        where: { username: profile._json.email },
-      });
+      const hasUser = await prisma.user
+        .findUnique({
+          where: { username: profile._json.email },
+        })
+        .catch((error) => {
+          console.error(error);
+        });
       if (hasUser) {
         cb(null, hasUser);
       } else {
@@ -48,9 +52,13 @@ passport.serializeUser(async (newUser, done) => {
 });
 
 passport.deserializeUser(async (newUser: string, done) => {
-  const thisUser = await prisma.user.findUnique({
-    where: { username: newUser },
-  });
+  const thisUser = await prisma.user
+    .findUnique({
+      where: { username: newUser },
+    })
+    .catch((error) => {
+      console.error(error);
+    });
   if (!thisUser) return done("No user to deserialize");
 
   return done(null, thisUser);

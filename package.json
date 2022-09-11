@@ -4,7 +4,6 @@
   "description": "the API for the recipe book webapp",
   "main": "server.ts",
   "scripts": {
-    "build": "npm run build",
     "prisma:migrate": "prisma migrate dev",
     "prisma:format": "prisma format",
     "prisma:generate": "prisma generate",

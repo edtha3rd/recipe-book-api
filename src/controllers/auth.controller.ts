@@ -87,7 +87,8 @@ async function main() {
     }
   });
   router.get("/auth/logout", (req, res) => {
-    // req.logout();
+    //   req.logout();
+    // res.redirect(CLIENT_URL);
   });
   router.get(
     "/auth/google",

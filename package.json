@@ -4,6 +4,7 @@
   "description": "the API for the recipe book webapp",
   "main": "server.ts",
   "scripts": {
+    "build": "serve -s build",
     "prisma:migrate": "prisma migrate dev",
     "prisma:format": "prisma format",
     "prisma:generate": "prisma generate",
@@ -28,6 +29,7 @@
     "passport-facebook": "^3.0.0",
     "passport-google-oauth2": "^0.2.0",
     "prisma": "^4.2.1",
+    "serve": "^14.0.1",
     "streamifier": "^0.1.1"
   },
   "devDependencies": {

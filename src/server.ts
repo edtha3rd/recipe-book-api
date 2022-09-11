@@ -1,7 +1,8 @@
 require("dotenv").config();
+import cookieSession from "cookie-session";
 import cors from "cors";
 import express, { Request, Response } from "express";
-import session from "express-session";
+// import session from "express-session";
 import passport from "passport";
 import routes from "./routes/routes";
 
@@ -16,17 +17,17 @@ const options: cors.CorsOptions = {
 };
 
 const app = express();
-app.use(session({ secret: process.env.SECRET || "kitkat" }));
+app.use(cookieSession({ secret: process.env.SECRET || "kitkat" }));
 
 const port = process.env.PORT;
 
 app.use(express.urlencoded({ extended: false }));
-// app.use(
-//   cookieSession({
-//     keys: [process.env.SECRET],
-//     maxAge: 24 * 60 * 60 * 7,
-//   })
-// );
+app.use(
+  cookieSession({
+    keys: [process.env.SECRET],
+    maxAge: 24 * 60 * 60 * 7,
+  })
+);
 app.use(cors(options));
 app.use(express.json());
 app.use(passport.initialize());

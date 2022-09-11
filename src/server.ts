@@ -18,7 +18,7 @@ const options: cors.CorsOptions = {
 const app = express();
 app.use(session({ secret: process.env.SECRET || "kitkat" }));
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 
 app.use(express.urlencoded({ extended: false }));
 // app.use(

@@ -78,6 +78,9 @@ async function main() {
       });
     }
   });
+  router.get("/auth/logout", (req, res) => {
+    // req.logout();
+  });
   router.get(
     "/auth/google",
     passport.authenticate("google", { scope: ["email", "profile"] })

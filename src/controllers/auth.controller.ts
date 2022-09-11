@@ -85,11 +85,11 @@ async function main() {
   router.get(
     "/auth/google/callback",
     passport.authenticate("google", {
-      failureRedirect: "http://localhost:3000/#/login",
+      failureRedirect: `${process.env.CLIENT_URL}/#/login`,
     }),
     (req: Request, res: Response) => {
       // res.cookie: req.cookies,
-      res.redirect("http://localhost:3000/#/");
+      res.redirect(`${process.env.CLIENT_URL}/#/`);
     }
   );
   //   router.post(

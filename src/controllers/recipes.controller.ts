@@ -83,7 +83,7 @@ async function main() {
         data: {
           name: req.body.name,
           category: req.body.category,
-          ingredients: req.body.ingredients,
+          ingredients: JSON.parse(req.body.ingredients),
           directions: req.body.ingredients,
           prepTime: req.body.prepTime,
           image: returnObject.secure_url,
@@ -104,7 +104,7 @@ async function main() {
           name: req.body.name,
           category: req.body.category,
           directions: req.body.directions,
-          ingredients: req.body.ingredients,
+          ingredients: JSON.parse(req.body.ingredients),
           image: req.body.image,
         },
       });

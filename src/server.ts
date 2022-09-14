@@ -17,7 +17,6 @@ const options: cors.CorsOptions = {
 };
 
 const app = express();
-app.use(session({ secret: process.env.SECRET || "kitkat" }));
 
 const port = process.env.PORT;
 
@@ -29,6 +28,15 @@ app.use(express.urlencoded({ extended: false }));
 //     maxAge: 24 * 60 * 60 * 7,
 //   })
 // );
+// app.use(session({ secret: process.env.SECRET || "kitkat" }));
+app.use(
+  session({
+    secret: process.env.SECRET,
+    resave: false,
+    saveUninitialized: false,
+    // cookie: { secure: true },
+  })
+);
 app.use(cors(options));
 app.use(express.json());
 app.use(passport.initialize());

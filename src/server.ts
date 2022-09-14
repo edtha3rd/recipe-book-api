@@ -34,6 +34,8 @@ app.use(
     secret: process.env.SECRET,
     resave: false,
     saveUninitialized: false,
+    proxy: true,
+    name: "letsfeast",
     // cookie: { secure: true },
   })
 );

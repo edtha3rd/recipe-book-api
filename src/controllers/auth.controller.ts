@@ -70,6 +70,7 @@ async function main() {
   //   res.redirect(process.env.API_URI)
   // })
   router.get("/auth/login/success", (req, res) => {
+    console.log("not failed");
     if (req.user) {
       res.status(200).json({
         success: true,
@@ -79,6 +80,7 @@ async function main() {
     }
   });
   router.get("/auth/login/failed", (req, res) => {
+    console.log("failed");
     if (req.user) {
       res.status(401).json({
         success: false,
@@ -100,8 +102,7 @@ async function main() {
       failureRedirect: `${process.env.CLIENT_URL}/#/login`,
     }),
     (req: Request, res: Response) => {
-      // res.cookie: req.cookies,
-      res.redirect(`${process.env.CLIENT_URL}/#/`);
+      (res.cookie = req.cookies), res.redirect(`${process.env.CLIENT_URL}/#/`);
     }
   );
   //   router.post(

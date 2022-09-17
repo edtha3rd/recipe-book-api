@@ -65,10 +65,10 @@ passport.deserializeUser(async (newUser: string, done) => {
 });
 
 async function main() {
-  // router.get("/logout", (req, res) => {
-  //   req.logOut()
-  //   res.redirect(process.env.API_URI)
-  // })
+  router.get("/logout", (req, res) => {
+    // req.logout()
+    // res.redirect(process.env.API_URI)
+  });
   router.get("/auth/login/success", (req, res) => {
     if (req.user) {
       res.status(200).json({
@@ -101,7 +101,8 @@ async function main() {
       failureRedirect: `${process.env.CLIENT_URL}/#/login`,
     }),
     (req: Request, res: Response) => {
-      (res.cookie = req.cookies), res.redirect(`${process.env.CLIENT_URL}/#/`);
+      res.send(req.session.cookie),
+        res.redirect(`${process.env.CLIENT_URL}/#/`);
     }
   );
 }

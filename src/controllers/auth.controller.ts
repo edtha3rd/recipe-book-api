@@ -104,18 +104,6 @@ async function main() {
       (res.cookie = req.cookies), res.redirect(`${process.env.CLIENT_URL}/#/`);
     }
   );
-  //   router.post(
-  //     `/signup/authenticateUser`,
-  //     async (req: Request, res: Response) => {
-  //       const newUser = await prisma.user.create({
-  //         data: {
-  //           username: profile.displayName,
-  //         },
-  //       })
-  //       console.log('User:', newUser)
-  //       res.send(newUser)
-  //     }
-  //   )
 }
 
 main()

@@ -101,8 +101,7 @@ async function main() {
       failureRedirect: `${process.env.CLIENT_URL}/#/login`,
     }),
     (req: Request, res: Response) => {
-      res.send(req.session.cookie),
-        res.redirect(`${process.env.CLIENT_URL}/#/`);
+      (res.cookie = req.cookies), res.redirect(`${process.env.CLIENT_URL}/#/`);
     }
   );
 }

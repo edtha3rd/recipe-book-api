@@ -37,7 +37,10 @@ app.use(
     saveUninitialized: false,
     proxy: true,
     name: "letsfeast",
-    // cookie: { secure: true },
+    cookie: {
+      secure: false, // if true only transmit cookie over https
+      httpOnly: false, // if true prevent client side JS from reading the cookie
+    },
   })
 );
 app.use(cors(options));

@@ -1,5 +1,6 @@
 require("dotenv").config();
 // import cookieSession from "cookie-session";
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { Request, Response } from "express";
 import session from "express-session";
@@ -28,6 +29,7 @@ const app = express();
 const port = process.env.PORT;
 
 app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
 app.set("trust proxy", 1);
 app.use(
   session({

@@ -13,27 +13,32 @@
 ## ENV Variables
 
 - Prisma Config
-  DATABASE_URL
-  MONGO_URI
+
+  - DATABASE_URL
+  - MONGO_URI
 
 - Database variables
-  POSTGRES_USER
-  POSTGRES_PASSWORD
-  POSTGRES_DB
+
+  - POSTGRES_USER
+  - POSTGRES_PASSWORD
+  - POSTGRES_DB
 
 - Google API Keys
-  GOOGLE_CLIENT_ID
-  GOOGLE_CLIENT_SECRET
+
+  - GOOGLE_CLIENT_ID
+  - GOOGLE_CLIENT_SECRET
 
 - Others
-  PORT=8008
-  SECRET
+
+  - PORT=8008
+  - SECRET
 
 - Cloudinary Config
-  CLOUD_NAME
-  API_KEY
-  API_SECRET
+
+  - CLOUD_NAME
+  - API_KEY
+  - API_SECRET
 
 - URIs
-  CLIENT_URL=http://localhost:3000
-  API=http://localhost:8008
+  - CLIENT_URL=http://localhost:3000
+  - API=http://localhost:8008

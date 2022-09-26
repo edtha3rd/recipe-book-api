@@ -13,7 +13,7 @@ var MongoDBStore = require("connect-mongodb-session")(session);
 const allowedOrigins = [process.env.CLIENT_URL, process.env.API];
 
 const options: cors.CorsOptions = {
-  origin: allowedOrigins,
+  origin: `${process.env.CLIENT_URL}`,
   methods: ["GET", "PUT", "POST", "DELETE"],
   credentials: true,
 };

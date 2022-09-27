@@ -44,7 +44,8 @@ app.use(
     cookie: {
       secure: false, // if true only transmit cookie over https
       httpOnly: false, // if true prevent client side JS from reading the cookie
-      sameSite: false,
+      domain: process.env.CLIENT_URL,
+      // sameSite: "lax",
     },
   })
 );

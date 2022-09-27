@@ -76,6 +76,9 @@ async function main() {
         message: "successful",
         user: req.user,
       });
+      // .header({
+      //   "set-cookie":
+      // });
     }
   });
   router.get("/auth/login/failed", (req, res) => {

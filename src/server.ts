@@ -45,7 +45,7 @@ app.use(
       secure: process.env.NODE_ENV === "production" ? true : false, // if true only transmit cookie over https
       httpOnly: false, // if true prevent client side JS from reading the cookie
       // domain: process.env.CLIENT_URL,
-      sameSite: false,
+      sameSite: "none",
     },
   })
 );

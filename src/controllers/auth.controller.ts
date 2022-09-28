@@ -105,7 +105,6 @@ async function main() {
     }),
     (req: Request, res: Response) => {
       res.cookie = req.cookies;
-      res.set("set-cookie", `letsfeast=${req.cookies}`);
       res.redirect(`${process.env.CLIENT_URL}/#/`);
     }
   );

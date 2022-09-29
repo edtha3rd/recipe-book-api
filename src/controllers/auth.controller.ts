@@ -72,20 +72,27 @@ async function main() {
   router.get("/auth/login/success", (req, res) => {
     console.log(req.user);
     if (req.user) {
-      res.status(200).json({
-        success: true,
-        message: "successful",
-        user: req.user,
-      });
+      res
+        .status(200)
+        .json({
+          success: true,
+          message: "successful",
+          user: req.user,
+        })
+        .redirect(`${process.env.CLIENT_URL}/#/`);
     } else res.status(404).send();
   });
   router.get("/auth/login/failed", (req, res) => {
     console.log("failed");
+    console.log(req.user);
     if (req.user) {
-      res.status(401).json({
-        success: false,
-        message: "failed",
-      });
+      res
+        .status(401)
+        .json({
+          success: false,
+          message: "failed",
+        })
+        .redirect(`${process.env.CLIENT_URL}/#/login`);
     }
   });
   router.get("/auth/logout", (req, res) => {
@@ -99,12 +106,12 @@ async function main() {
   router.get(
     "/auth/google/callback",
     passport.authenticate("google", {
-      failureRedirect: `${process.env.CLIENT_URL}/#/login`,
+      failureRedirect: `/auth/login/failed`,
     }),
     (req: Request, res: Response) => {
       console.log("succeeeded");
       res.cookie = req.cookies;
-      res.redirect(`${process.env.CLIENT_URL}/#/`);
+      res.redirect("/auth/login/success");
     }
   );
 }

@@ -109,9 +109,8 @@ async function main() {
       failureRedirect: `/auth/login/failed`,
     }),
     (req: Request, res: Response) => {
-      console.log("succeeeded");
       res.cookie = req.cookies;
-      res.redirect("/auth/login/success");
+      res.redirect(`${process.env.CLIENT_URL}`);
     }
   );
 }

@@ -1,5 +1,5 @@
 #Use postgres/example user/password credentials
-version: '3'
+version: "3"
 
 services:
   db:
@@ -8,10 +8,13 @@ services:
     # port to connect to on local machine and from the container
     #using default psql port
     ports:
-      - 5432:5432
-    restart: always
+      - "5432:5432"
     # retrieve environment variables for dbuser, dbpassword, and dbname
     env_file:
       - .env
     # share a local folder with the container to save our db data locally
-    volumes: -./db-data/:/var/lib/postgresql/data/
+    volumes:
+      - db-data:/var/lib/postgresql/data/
+
+volumes:
+  db-data:

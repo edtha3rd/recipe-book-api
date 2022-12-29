@@ -12,12 +12,14 @@ datasource db {
 }
 
 model User {
-  id          String   @id @default(uuid())
-  username    String   @unique
+  id          String     @id @default(uuid())
+  username    String     @unique
   displayName String?
   provider    String?
   avatarURL   String?
+  password    String?
   recipes     Recipe[]
+  mealPlans   MealPlan[]
 }
 
 model Recipe {
@@ -31,4 +33,16 @@ model Recipe {
   isFavorite  Boolean  @default(false)
   author      User     @relation(fields: [authorId], references: [id])
   authorId    String
+  plan        MealPlan @relation(fields: [planId], references: [id])
+  planId      String
+}
+
+model MealPlan {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  name      String
+  tag       String
+  recipes   Recipe[]
+  chef      User     @relation(fields: [chefId], references: [id])
+  chefId    String
 }

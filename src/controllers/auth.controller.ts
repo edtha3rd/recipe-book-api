@@ -3,6 +3,9 @@ import { Request, Response, Router } from "express";
 import passport from "passport";
 import { PassportGoogleUserEntity } from "../models/PassportGoogleUserEntity";
 const GoogleStrategy = require("passport-google-oauth2").Strategy;
+const LocalStrategy = require("passport-local").Strategy;
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -22,6 +25,7 @@ passport.use(
       profile: PassportGoogleUserEntity,
       cb: any
     ) => {
+      console.log("google strategy");
       //check if user already exists
       const hasUser = await prisma.user
         .findUnique({
@@ -46,6 +50,26 @@ passport.use(
     }
   )
 );
+passport.use(
+  new LocalStrategy(async (username: string, password: string, cb) => {
+    console.log("local strategy");
+    // hash user password
+    const hash = bcrypt.hashSync(password, saltRounds);
+    //check if user already exists
+    const hasUser = await prisma.user
+      .findUnique({
+        where: { username: username },
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    if (!hasUser || bcrypt.compare(hash, hasUser.password)) {
+      return cb(null, false, { message: "Incorrect username or password" });
+    } else if (hasUser && bcrypt.compare(hash, hasUser.password)) {
+      cb(null, hasUser);
+    }
+  })
+);
 
 passport.serializeUser(async (newUser, done) => {
   done(null, (newUser as User).username);
@@ -65,21 +89,14 @@ passport.deserializeUser(async (newUser: string, done) => {
 });
 
 async function main() {
-  router.get("/logout", (req, res) => {
-    // req.logout()
-    // res.redirect(process.env.API_URI)
-  });
   router.get("/auth/login/success", (req, res) => {
-    console.log(req.user);
     if (req.user) {
-      res
-        .status(200)
-        .json({
-          success: true,
-          message: "successful",
-          user: req.user,
-        })
-        .redirect(`${process.env.CLIENT_URL}/#/`);
+      res.status(200).json({
+        success: true,
+        message: "successful",
+        user: req.user,
+      });
+      // .redirect(`${process.env.CLIENT_URL}/#/`);
     } else res.status(404).send();
   });
   router.get("/auth/login/failed", (req, res) => {
@@ -95,9 +112,13 @@ async function main() {
         .redirect(`${process.env.CLIENT_URL}/#/login`);
     }
   });
-  router.get("/auth/logout", (req, res) => {
-    //   req.logout();
-    // res.redirect(CLIENT_URL);
+  router.post("/logout", (req, res, next) => {
+    req.logout(function (err) {
+      if (err) {
+        return next(err);
+      }
+      res.redirect(process.env.CLIENT_URL);
+    });
   });
   router.get(
     "/auth/google",
@@ -113,6 +134,41 @@ async function main() {
       res.redirect(`${process.env.CLIENT_URL}`);
     }
   );
+  router.post(
+    "/login/local",
+    passport.authenticate("local", {
+      failureRedirect: `/auth/login/failed`,
+    }),
+    (req: Request, res: Response) => {
+      res.cookie = req.cookies;
+      res.redirect(`${process.env.CLIENT_URL}`);
+    }
+  );
+  router.post("/signup", async (req, res, cb) => {
+    let hashed;
+    bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
+      hashed = hash;
+    });
+    const newUser = await prisma.user
+      .create({
+        data: {
+          provider: "local",
+          password: hashed,
+          username: req.body.username,
+          displayName: req.body.displayName,
+          avatarURL: "defaultAvatarURL",
+        },
+      })
+      .catch((err) => {
+        return cb(err);
+      });
+    if (newUser) {
+      req.login(newUser, (err) => {
+        if (err) return cb(err);
+        res.redirect("/");
+      });
+    }
+  });
 }
 
 main()
